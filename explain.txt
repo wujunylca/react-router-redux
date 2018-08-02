@@ -1,0 +1,64 @@
+1. index.js  文件入口  加载 App组件
+
+2.App.js组件 路由配置   页面显示  (react-router-dom)
+    			<Route exact path="/" component={Login}/>
+				<Route exact path="/Home" component={Home}/>
+				<Route path="/About" component={About}/>
+				<Route path="/News" component={NewsReactRedux}/>
+    Route 必须在 router路由容器包裹 ：
+       <Router>
+            <App />
+        </Router> 
+    Link 可以在别的页面使用，跳转即可
+
+3.redux  react-redux   全局状态共享
+   action 页面动作   自动调用reducer   ;
+   reducer 更新你要修改的状态值，将 reducer 放到  createStore(reducer) 存储起来，以便共享；
+
+   有很多的 reducer 放到 const rootReducers =  combineReducers({
+                isLoginReducer,
+               NewsRedux
+         });  一起传给createStore（rootReducers） 存储， 最好建立rootRedux.js单独管理
+
+  index.js 使用 store  如： const store =createStore(rootRedux);
+  <Provider store={store} >   react-redux 提供 Provider 组件可以让所有子组件获取到store的信息
+        <Router>
+            <App />
+        </Router> 
+    </Provider>
+
+4.页面 发起 action  更新 状态 数据
+  在news 文件下
+      页面  News.js  其reducer 是newsRedux.js  只要页面发起action ，就会执行是newsRedux.js更新状态
+
+      react-redux 提供了 
+      mapStateToProps， mapDispatchToProps 两个函数，
+      用于将共享的数据和发起的动作作为 this.props 的属性使用，在页面里可以这样用
+
+                <ul>
+					{
+					this.props.list.map((item,i)=>(
+						<li key={item.id}>
+							<a>{item.title}</a>
+							<span>{item.con}</span>
+						</li>
+					))
+					
+					}
+						<button onClick={this.props.sortreverse.bind(this)}>反向显示</button>
+				</ul>
+    list 是全局的 list     sortreverse 是更新list 的动作
+
+    这样使用必须将页面 News 和 NewsRedux 连接起来 ，连接通过 NewsREactRedux.js；
+
+    在NewsREactRedux.js 中  通过var NewsReactRedux = connect(mapStateToProps,mapDispatchToProps)(News);去连接
+    
+    此时页面的路由配置App.js  不再是
+     <Route path="/News" component={News}/>  
+     而是：	<Route path="/News" component={NewsReactRedux}/>
+
+ 5.登录
+
+
+
+
